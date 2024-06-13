@@ -5,62 +5,23 @@ namespace App\Http\Controllers;
 use App\Models\customer;
 use App\Http\Requests\StorecustomerRequest;
 use App\Http\Requests\UpdatecustomerRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class CustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function checkCustomer(Request $request)
     {
-        //
-    }
+        $customer_id = Customer::where('national_id', $request->national_id)->first(); // take 2.85 seconds
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        // $customer_id = Redis::get('national_' . $request->national_id); // but this take 287 ms
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StorecustomerRequest $request)
-    {
-        //
-    }
+        if ($customer_id) {
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(customer $customer)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(customer $customer)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdatecustomerRequest $request, customer $customer)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(customer $customer)
-    {
-        //
+            Customer::where('id', $customer_id)->update($request->all());
+        } else {
+            
+            Customer::create($request->all());
+        }
     }
 }
