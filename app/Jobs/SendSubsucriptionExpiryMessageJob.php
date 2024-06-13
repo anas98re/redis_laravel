@@ -25,8 +25,6 @@ class SendSubsucriptionExpiryMessageJob implements ShouldQueue
      */
     public function handle(): void
     {
-        //send email
-        info('im here in SendSubsucriptionExpiryMessageJob class');
-        // $customrs = customer::get();
+        sendMail('emails.subscription_expiration',$this->customer->email, 'your email' ,$this->customer);
     }
 }
